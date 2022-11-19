@@ -1,27 +1,59 @@
 import csstype.px
-import csstype.rgb
-import react.FC
-import react.Props
 import emotion.react.css
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import org.hildan.krossbow.stomp.StompClient
+import org.hildan.krossbow.stomp.StompSession
+import org.hildan.krossbow.stomp.frame.FrameBody
+import org.hildan.krossbow.stomp.frame.StompFrame
+import org.hildan.krossbow.stomp.headers.StompSendHeaders
+import org.hildan.krossbow.stomp.subscribe
+import org.hildan.krossbow.websocket.sockjs.SockJSClient
+import react.*
 import react.dom.html.InputType
-import react.dom.html.ReactHTML.div
+import react.dom.html.ReactHTML.button
 import react.dom.html.ReactHTML.input
-import react.useState
 
 external interface WelcomeProps : Props {
     var name: String
 }
 
+val mainScope = MainScope()
+
 val Welcome = FC<WelcomeProps> { props ->
     var name by useState(props.name)
-    div {
-        css {
-            padding = 5.px
-            backgroundColor = rgb(8, 97, 22)
-            color = rgb(56, 246, 137)
+    var session by useState<StompSession>()
+    var subscription by useState<Flow<StompFrame.Message>>()
+
+    useEffectOnce {
+        mainScope.launch {
+            val stompClient = StompClient(SockJSClient())
+            session = stompClient.connect("http://localhost:8080/ws")
         }
-        +"Hello, $name"
     }
+
+    useEffect(session) {
+        mainScope.launch {
+            subscription = session?.subscribe("/client/chat/name")
+        }
+    }
+
+    useEffect(subscription) {
+        println("SUBSCRIPTION CHANGED")
+        println(JSON.stringify(subscription))
+        mainScope.launch {
+            subscription?.collect {
+                println(it.bodyAsText)
+            }
+        }
+    }
+
+
+
+
     input {
         css {
             marginTop = 5.px
@@ -33,5 +65,13 @@ val Welcome = FC<WelcomeProps> { props ->
         onChange = { event ->
             name = event.target.value
         }
+    }
+    button {
+        onClick = {
+            mainScope.launch {
+                session?.send(StompSendHeaders(destination = "/push"), FrameBody.Text(name))
+            }
+        }
+        +"Send"
     }
 }
