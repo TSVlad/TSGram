@@ -11,13 +11,13 @@ class ChatController(
     val messageTemplate : SimpMessagingTemplate
 ) {
 
-    @MessageMapping("/push")
+    @MessageMapping("/topic/push")
     fun processMessage(@Payload message: String) {
         println(message)
-        messageTemplate.convertAndSend("/client/chat/name", message)
+        messageTemplate.convertAndSend("/topic/chat.name", message)
     }
 
-    @SubscribeMapping("/client/chat/name")
+    @SubscribeMapping("/topic/chat.name")
     fun subscription() {
         println("Subscription")
     }

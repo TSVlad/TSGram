@@ -1,7 +1,9 @@
 import csstype.px
 import emotion.react.css
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -37,7 +39,7 @@ val Welcome = FC<WelcomeProps> { props ->
 
     useEffect(session) {
         mainScope.launch {
-            subscription = session?.subscribe("/client/chat/name")
+            subscription = session?.subscribe("/topic/chat.name")
         }
     }
 
@@ -45,7 +47,7 @@ val Welcome = FC<WelcomeProps> { props ->
         println("SUBSCRIPTION CHANGED")
         println(JSON.stringify(subscription))
         mainScope.launch {
-            subscription?.collect {
+            subscription?.cancellable()?.collect {
                 println(it.bodyAsText)
             }
         }
@@ -69,7 +71,7 @@ val Welcome = FC<WelcomeProps> { props ->
     button {
         onClick = {
             mainScope.launch {
-                session?.send(StompSendHeaders(destination = "/push"), FrameBody.Text(name))
+                session?.send(StompSendHeaders(destination = "/topic/push"), FrameBody.Text(name))
             }
         }
         +"Send"

@@ -1,3 +1,10 @@
-#logging:
-#  level:
-#    root: debug
+logging:
+  level:
+    root: debug
+
+stomp:
+  broker:
+    host: localhost
+    port: 61613
+    login: admin
+    password: admin

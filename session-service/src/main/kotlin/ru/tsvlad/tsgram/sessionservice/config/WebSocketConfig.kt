@@ -10,7 +10,8 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 
 @Configuration
 @EnableWebSocketMessageBroker
-class WebSocketConfig : WebSocketMessageBrokerConfigurer {
+class WebSocketConfig(val stompBrokerProperties: StompBrokerProperties) : WebSocketMessageBrokerConfigurer {
+
     override fun registerStompEndpoints(registry: StompEndpointRegistry) {
         registry.addEndpoint("/ws")
             .setAllowedOriginPatterns("*")
@@ -23,8 +24,15 @@ class WebSocketConfig : WebSocketMessageBrokerConfigurer {
     }
 
     override fun configureMessageBroker(registry: MessageBrokerRegistry) {
-        registry.enableSimpleBroker("/client")
+        registry.enableStompBrokerRelay("/topic")
+            .setRelayHost(stompBrokerProperties.host)
+            .setVirtualHost("/")
+            .setRelayPort(stompBrokerProperties.port)
+            .setClientLogin(stompBrokerProperties.login)
+            .setClientPasscode(stompBrokerProperties.password)
+            .setSystemLogin(stompBrokerProperties.login)
+            .setSystemPasscode(stompBrokerProperties.password);
 //        registry.setApplicationDestinationPrefixes("/app")
-        registry.setUserDestinationPrefix("/user")
+//        registry.setUserDestinationPrefix("/user")
     }
 }
