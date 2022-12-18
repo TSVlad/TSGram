@@ -1,0 +1,25 @@
+version: "3.9"
+
+networks:
+  internal:
+    driver: bridge
+
+volumes:
+  keycloak-postgres-data:
+    driver: local
+
+services:
+  keycloak-postgres:
+    image: postgres:15.1
+    container_name: tsgram-keycloak-postgres
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: keycloakdb
+    ports:
+      - "5433:5432"
+    networks:
+      - internal
+    volumes:
+      - keycloak-postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
