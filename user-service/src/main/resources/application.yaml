@@ -1,0 +1,10 @@
+server:
+  port: 8081
+
+keycloak:
+  enabled: true
+  auth-server-url: http://localhost:8484/auth
+  realm: tsgram
+  resource: user-service
+  credentials:
+    secret: sFpxzjjJT482KaRMiBpkfAjjmLyAFXNN

@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "3.0.0"
+    id("org.springframework.boot") version "2.6.3"
     id("io.spring.dependency-management") version "1.1.0"
     kotlin("jvm") version "1.7.21"
     kotlin("plugin.spring") version "1.7.21"
@@ -19,6 +19,7 @@ configurations {
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
@@ -29,6 +30,8 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.keycloak:keycloak-spring-boot-starter:20.0.2")
     implementation("org.keycloak:keycloak-admin-client:20.0.2")
+    implementation("org.mapstruct:mapstruct:1.5.3.Final")
+    implementation("ru.tsvlad.tsgram:tsgram-commons:1.0-SNAPSHOT")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
