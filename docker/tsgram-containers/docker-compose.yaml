@@ -7,8 +7,15 @@ networks:
 volumes:
   keycloak-postgres-data:
     driver: local
+  chat-cassandra-data-1:
+    driver: local
+  chat-cassandra-data-2:
+    driver: local
+  chat-cassandra-data-3:
+    driver: local
 
 services:
+
   keycloak-postgres:
     image: postgres:15.1
     container_name: tsgram-keycloak-postgres
@@ -23,3 +30,42 @@ services:
     volumes:
       - keycloak-postgres-data:/var/lib/postgresql/data
     restart: unless-stopped
+
+  chat-cassandra-1:
+    image: cassandra:4.1.0
+    container_name: tsgram-chat-cassandra-1
+    environment:
+      CASSANDRA_SEEDS: chat-cassandra-1
+    ports:
+      - "9043:9042"
+    networks:
+      - internal
+    volumes:
+      - chat-cassandra-data-1:/var/lib/cassandra
+    restart: unless-stopped
+
+  # chat-cassandra-2:
+  #   image: cassandra:4.1.0
+  #   container_name: tsgram-chat-cassandra-2
+  #   environment:
+  #     CASSANDRA_SEEDS: chat-cassandra-1
+  #   ports:
+  #     - "9044:9042"
+  #   networks:
+  #     - internal
+  #   volumes:
+  #     - chat-cassandra-data-2:/var/lib/cassandra
+  #   restart: unless-stopped
+
+  # chat-cassandra-3:
+  #   image: cassandra:4.1.0
+  #   container_name: tsgram-chat-cassandra-3
+  #   environment:
+  #     CASSANDRA_SEEDS: chat-cassandra-1
+  #   ports:
+  #     - "9045:9042"
+  #   networks:
+  #     - internal
+  #   volumes:
+  #     - chat-cassandra-data-3:/var/lib/cassandra
+  #   restart: unless-stopped

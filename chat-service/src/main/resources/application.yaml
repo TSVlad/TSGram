@@ -1,0 +1,17 @@
+server:
+  port: 8082
+
+spring:
+  data:
+    cassandra:
+      keyspace-name: tsgram
+      contact-points:
+      - localhost:9043
+#      - localhost:9044
+#      - localhost:9045
+      local-datacenter: datacenter1
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8484/auth/realms/tsgram/protocol/openid-connect/certs
