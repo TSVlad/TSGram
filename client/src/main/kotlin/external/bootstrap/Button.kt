@@ -1,5 +1,4 @@
 @file:JsModule("react-bootstrap/Button") //import Button from 'react-bootstrap/Button';
-
 @file:JsNonModule
 
 package external.bootstrap

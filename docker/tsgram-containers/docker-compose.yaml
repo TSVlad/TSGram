@@ -9,10 +9,10 @@ volumes:
     driver: local
   chat-cassandra-data-1:
     driver: local
-  chat-cassandra-data-2:
-    driver: local
-  chat-cassandra-data-3:
-    driver: local
+  # chat-cassandra-data-2:
+  #   driver: local
+  # chat-cassandra-data-3:
+  #   driver: local
 
 services:
 
